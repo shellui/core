@@ -1,5 +1,5 @@
 import { cac } from 'cac';
-import { createServer } from 'vite';
+import { createServer, build } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import fs from 'fs';
@@ -64,6 +64,59 @@ cli
       server.printUrls();
     } catch (e) {
       console.error(pc.red(`Error starting server: ${e.message}`));
+      process.exit(1);
+    }
+  });
+
+cli
+  .command('build [root]', 'Build the shellui application')
+  .action(async (root = '.') => {
+    const cwd = process.cwd();
+    const configDir = path.resolve(cwd, root);
+    const configPath = path.join(configDir, 'shellui.json');
+    const legacyConfigPath = path.join(configDir, 'shellioj.json');
+
+    console.log(pc.blue(`Building ShellUI...`));
+    
+    let config = {};
+    let activeConfigPath = null;
+
+    if (fs.existsSync(configPath)) {
+        activeConfigPath = configPath;
+    } else if (fs.existsSync(legacyConfigPath)) {
+        activeConfigPath = legacyConfigPath;
+    }
+
+    if (activeConfigPath) {
+      try {
+        const configFile = fs.readFileSync(activeConfigPath, 'utf-8');
+        config = JSON.parse(configFile);
+        console.log(pc.green(`Loaded config from ${activeConfigPath}`));
+      } catch (e) {
+        console.error(pc.red(`Failed to load config: ${e.message}`));
+      }
+    } else {
+      console.log(pc.yellow(`No shellui.json (or shellioj.json) found, using defaults.`));
+    }
+
+    // Path to the index.html inside the package
+    const templateRoot = path.join(__dirname); // src folder
+
+    try {
+      await build({
+        root: templateRoot, // Serve from src/ where index.html is
+        plugins: [react()],
+        define: {
+          '__SHELLUI_CONFIG__': JSON.stringify(config),
+        },
+        build: {
+          outDir: path.resolve(cwd, 'dist'),
+          emptyOutDir: true,
+        }
+      });
+      console.log(pc.green('Build complete!'));
+    } catch (e) {
+      console.error(pc.red(`Error building: ${e.message}`));
       process.exit(1);
     }
   });

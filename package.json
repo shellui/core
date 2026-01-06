@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "node bin/shellui.js start",
+    "build": "node bin/shellui.js build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "ShellUI",
