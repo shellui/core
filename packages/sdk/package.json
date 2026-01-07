@@ -1,0 +1,31 @@
+{
+  "name": "@shellui/sdk",
+  "version": "0.0.1",
+  "description": "ShellUI SDK - JavaScript SDK for ShellUI integration",
+  "main": "src/index.js",
+  "type": "module",
+  "files": [
+    "src",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "echo 'SDK build complete'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "shellui",
+    "sdk",
+    "javascript",
+    "microfrontend"
+  ],
+  "author": "ShellUI",
+  "license": "MIT",
+  "dependencies": {
+    "@shellui/core": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
+

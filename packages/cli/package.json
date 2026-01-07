@@ -1,0 +1,38 @@
+{
+  "name": "@shellui/cli",
+  "version": "0.0.2",
+  "description": "ShellUI CLI - Command-line tool for ShellUI",
+  "main": "src/cli.js",
+  "type": "module",
+  "bin": {
+    "shellui": "./bin/shellui.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "echo 'CLI build complete'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "shellui",
+    "cli",
+    "microfrontend",
+    "vite"
+  ],
+  "author": "ShellUI",
+  "license": "MIT",
+  "dependencies": {
+    "@shellui/core": "*",
+    "@vitejs/plugin-react": "^5.1.2",
+    "cac": "^6.7.14",
+    "picocolors": "^1.1.1",
+    "vite": "^7.3.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

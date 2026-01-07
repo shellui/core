@@ -1,0 +1,35 @@
+{
+  "name": "@shellui/core",
+  "version": "0.0.1",
+  "description": "ShellUI Core - Core React application runtime",
+  "main": "src/app.jsx",
+  "type": "module",
+  "files": [
+    "src",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "echo 'Core build complete'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "shellui",
+    "core",
+    "react",
+    "microfrontend"
+  ],
+  "author": "ShellUI",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

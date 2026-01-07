@@ -1,90 +1,80 @@
-# ShellUI
+# ShellUI Monorepo
 
 > A lightweight microfrontend shell to ship apps faster.
 
-[![npm version](https://img.shields.io/npm/v/@shellui/cli.svg)](https://www.npmjs.com/package/@shellui/cli)
+This monorepo contains the ShellUI packages:
 
-ShellUI is a CLI tool that spins up a React-based microfrontend shell. It is powered by Vite and designed to be easily configurable.
+- **@shellui/cli** - Command-line tool for ShellUI
+- **@shellui/core** - Core React application runtime
+- **@shellui/sdk** - JavaScript SDK for ShellUI integration
 
-**Available on npm**: Install with `npm install @shellui/cli` or use `npx @shellui/cli` to get started quickly.
+## Structure
 
-## Features
-
-- 🚀 **Fast**: Built on top of Vite for instant server start.
-- ⚛️ **React-based**: The shell is a React application.
-- ⚙️ **Configurable**: Loads configuration from `shellui.json` in your project root.
-- 🔌 **Injectable Config**: Configuration is automatically injected into the shell application.
-
-## Installation
-
-ShellUI is available on npm. Install it globally:
-
-```bash
-npm install -g @shellui/cli
 ```
-
-Or install it as a dev dependency in your project:
-
-```bash
-npm install --save-dev @shellui/cli
+.
+├── packages/
+│   ├── cli/          # CLI package
+│   ├── core/          # Core React app
+│   └── sdk/           # SDK package
+└── package.json       # Root workspace configuration
 ```
-
-You can also use it directly with `npx` without installing:
-
-```bash
-npx shellui start
-```
-
-## Usage
-
-After installation, you can use the `shellui` command directly:
-
-```bash
-npx shellui start [path/to/project]
-```
-
-Or if installed globally:
-
-```bash
-shellui start [path/to/project]
-```
-
-You can also use it via npm scripts in your `package.json`:
-
-```json
-{
-  "scripts": {
-    "start": "shellui start",
-    "build": "shellui build"
-  }
-}
-```
-
-By default, it looks for configuration in the current directory.
-
-## Configuration
-
-ShellUI looks for a `shellui.json` file in your project root.
-
-**Example `shellui.json`:**
-
-```json
-{
-  "port": 4000
-}
-```
-
-- **port**: The port number to start the server on (default: `3000`).
 
 ## Development
 
-This repository contains the core logic for the shell.
+### Install dependencies
 
-- `bin/shellui.js`: The CLI entry point.
-- `src/cli.js`: Main CLI logic using `cac` and `vite`.
-- `src/app.jsx`: The shell's React application entry point.
+```bash
+npm install
+```
+
+### Build all packages
+
+```bash
+npm run build
+```
+
+### Build individual packages
+
+```bash
+npm run build:cli
+npm run build:core
+npm run build:sdk
+```
+
+### Run tests
+
+```bash
+npm test
+```
+
+## Publishing
+
+### Publish all packages
+
+```bash
+npm run publish:all
+```
+
+### Publish individual packages
+
+```bash
+npm run publish:cli
+npm run publish:core
+npm run publish:sdk
+```
+
+## Workspace Scripts
+
+- `npm run build` - Build all packages
+- `npm run build:cli` - Build CLI package
+- `npm run build:core` - Build Core package
+- `npm run build:sdk` - Build SDK package
+- `npm run publish:all` - Publish all packages
+- `npm run publish:cli` - Publish CLI package
+- `npm run publish:core` - Publish Core package
+- `npm run publish:sdk` - Publish SDK package
+- `npm run clean` - Clean all node_modules
 
 ## License
 
 MIT
-

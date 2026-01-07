@@ -1,8 +1,8 @@
-.vscode
-node_modules
-dist
+node_modules/
+packages/
 *.log
 .DS_Store
-.git
+.env
+.env.local
+.git/
 .gitignore
-
