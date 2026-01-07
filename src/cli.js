@@ -15,7 +15,6 @@ cli
     const cwd = process.cwd();
     const configDir = path.resolve(cwd, root);
     const configPath = path.join(configDir, 'shellui.json');
-    const legacyConfigPath = path.join(configDir, 'shellioj.json');
 
     console.log(pc.blue(`Starting ShellUI...`));
     
@@ -24,8 +23,6 @@ cli
 
     if (fs.existsSync(configPath)) {
         activeConfigPath = configPath;
-    } else if (fs.existsSync(legacyConfigPath)) {
-        activeConfigPath = legacyConfigPath;
     }
 
     if (activeConfigPath) {
@@ -74,7 +71,6 @@ cli
     const cwd = process.cwd();
     const configDir = path.resolve(cwd, root);
     const configPath = path.join(configDir, 'shellui.json');
-    const legacyConfigPath = path.join(configDir, 'shellioj.json');
 
     console.log(pc.blue(`Building ShellUI...`));
     
@@ -83,8 +79,6 @@ cli
 
     if (fs.existsSync(configPath)) {
         activeConfigPath = configPath;
-    } else if (fs.existsSync(legacyConfigPath)) {
-        activeConfigPath = legacyConfigPath;
     }
 
     if (activeConfigPath) {
