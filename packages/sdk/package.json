@@ -1,6 +1,6 @@
 {
   "name": "@shellui/sdk",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ShellUI SDK - JavaScript SDK for ShellUI integration",
   "main": "src/index.js",
   "types": "src/index.d.ts",
@@ -22,11 +22,8 @@
   ],
   "author": "ShellUI",
   "license": "MIT",
-  "dependencies": {
-    "@shellui/core": "*"
-  },
+  "dependencies": {},
   "publishConfig": {
     "access": "public"
   }
 }
-
