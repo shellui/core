@@ -2,6 +2,8 @@ import { Link, useLocation, Outlet } from 'react-router-dom';
 import type { NavigationItem } from '../config/types';
 import {
   Sidebar,
+  SidebarProvider,
+  SidebarTrigger,
   SidebarHeader,
   SidebarContent,
   SidebarMenu,
@@ -15,49 +17,61 @@ interface DefaultLayoutProps {
   navigation: NavigationItem[];
 }
 
-export const DefaultLayout = ({ title, navigation }: DefaultLayoutProps) => {
+const NavigationContent = ({ navigation }: { navigation: NavigationItem[] }) => {
   const location = useLocation();
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar>
-        {title && (
-          <SidebarHeader className="border-b border-sidebar-border pb-4">
-            <Link to="/" className="text-lg font-semibold text-sidebar-foreground hover:text-sidebar-foreground/80 transition-colors">
-              {title}
-            </Link>
-          </SidebarHeader>
-        )}
-        
-        <SidebarContent>
-          <SidebarMenu>
-            {navigation.map((item) => {
-              const isActive = location.pathname === `/${item.path}`;
-              return (
-                <SidebarMenuItem key={item.path}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive}
-                    className={cn(
-                      "w-full justify-start",
-                      isActive && "bg-sidebar-accent text-sidebar-accent-foreground"
-                    )}
-                  >
-                    <Link to={`/${item.path}`}>
-                      {item.label}
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
-            })}
-          </SidebarMenu>
-        </SidebarContent>
-      </Sidebar>
+    <SidebarMenu>
+      {navigation.map((item) => {
+        const isActive = location.pathname === `/${item.path}`;
+        return (
+          <SidebarMenuItem key={item.path}>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive}
+              className={cn(
+                "w-full",
+                isActive && "bg-sidebar-accent text-sidebar-accent-foreground"
+              )}
+            >
+              <Link to={`/${item.path}`} className="flex items-center gap-2 w-full">
+                <span className="truncate">{item.label}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        );
+      })}
+    </SidebarMenu>
+  );
+};
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col overflow-hidden bg-background">
-        <Outlet />
-      </main>
-    </div>
+export const DefaultLayout = ({ title, navigation }: DefaultLayoutProps) => {
+
+  return (
+    <SidebarProvider>
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar>
+          <SidebarHeader className="border-b border-sidebar-border pb-4">
+            {title && (
+              <Link to="/" className="text-lg font-semibold text-sidebar-foreground hover:text-sidebar-foreground/80 transition-colors">
+                {title}
+              </Link>
+            )}
+          </SidebarHeader>
+          
+          <SidebarContent>
+            <NavigationContent navigation={navigation} />
+          </SidebarContent>
+        </Sidebar>
+
+        {/* Main Content Area */}
+        <main className="flex-1 flex flex-col overflow-hidden bg-background relative">
+          <div className="absolute top-4 left-4 z-[9999]">
+            <SidebarTrigger />
+          </div>
+          <Outlet />
+        </main>
+      </div>
+    </SidebarProvider>
   );
 };

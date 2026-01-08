@@ -2,17 +2,51 @@ import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import { PanelLeft } from "lucide-react"
+
+type SidebarContextValue = {
+  isCollapsed: boolean
+  toggle: () => void
+}
+
+const SidebarContext = React.createContext<SidebarContextValue | undefined>(undefined)
+
+const useSidebar = () => {
+  const context = React.useContext(SidebarContext)
+  if (!context) {
+    throw new Error("useSidebar must be used within a SidebarProvider")
+  }
+  return context
+}
+
+const SidebarProvider = ({ children }: { children: React.ReactNode }) => {
+  const [isCollapsed, setIsCollapsed] = React.useState(false)
+
+  const toggle = React.useCallback(() => {
+    setIsCollapsed((prev) => !prev)
+  }, [])
+
+  return (
+    <SidebarContext.Provider value={{ isCollapsed, toggle }}>
+      {children}
+    </SidebarContext.Provider>
+  )
+}
 
 const Sidebar = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
+  const { isCollapsed } = useSidebar()
+  
   return (
     <div
       ref={ref}
       data-sidebar="sidebar"
+      data-collapsed={isCollapsed}
       className={cn(
-        "flex h-full w-64 flex-col gap-2 border-r bg-sidebar-background p-2 text-sidebar-foreground",
+        "flex h-full flex-col gap-2 border-r bg-sidebar-background p-2 text-sidebar-foreground transition-all duration-300 ease-in-out overflow-hidden",
+        isCollapsed ? "w-0 border-r-0 p-0" : "w-64",
         className
       )}
       {...props}
@@ -20,6 +54,34 @@ const Sidebar = React.forwardRef<
   )
 })
 Sidebar.displayName = "Sidebar"
+
+const SidebarTrigger = React.forwardRef<
+  HTMLButtonElement,
+  React.ButtonHTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => {
+  const { toggle, isCollapsed } = useSidebar()
+  
+  return (
+    <button
+      ref={ref}
+      onClick={toggle}
+      className={cn(
+        "relative z-[9999] flex items-center justify-center rounded-md p-2 text-foreground transition-colors hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring shadow-lg backdrop-blur-md",
+        className
+      )}
+      aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+      style={{ 
+        zIndex: 9999, 
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        border: '1px solid rgba(0, 0, 0, 0.1)'
+      }}
+      {...props}
+    >
+      <PanelLeft className="h-5 w-5" />
+    </button>
+  )
+})
+SidebarTrigger.displayName = "SidebarTrigger"
 
 const SidebarHeader = React.forwardRef<
   HTMLDivElement,
@@ -92,15 +154,24 @@ const SidebarMenuButton = React.forwardRef<
       asChild?: boolean
       isActive?: boolean
     }
->(({ className, variant, size, asChild = false, isActive, ...props }, ref) => {
+>(({ className, variant, size, asChild = false, isActive, children, ...props }, ref) => {
+  const { isCollapsed } = useSidebar()
   const Comp = asChild ? Slot : "button"
+  
   return (
     <Comp
       ref={ref}
       data-active={isActive}
-      className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+      data-collapsed={isCollapsed}
+      className={cn(
+        sidebarMenuButtonVariants({ variant, size }),
+        isCollapsed && "justify-center",
+        className
+      )}
       {...props}
-    />
+    >
+      {children}
+    </Comp>
   )
 })
 SidebarMenuButton.displayName = "SidebarMenuButton"
@@ -254,6 +325,8 @@ SidebarMenuSubItem.displayName = "SidebarMenuSubItem"
 
 export {
   Sidebar,
+  SidebarProvider,
+  SidebarTrigger,
   SidebarHeader,
   SidebarContent,
   SidebarFooter,
@@ -266,4 +339,5 @@ export {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 }

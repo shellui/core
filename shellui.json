@@ -1,6 +1,6 @@
 {
   "port": 4000,
-  "title": "Hi ShellUI",
+  "title": "ShellUI",
   "navigation": [
     {
       "label": "Docs",
