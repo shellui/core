@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useConfig } from '../features/config/useConfig';
+import { useConfig } from './features/config/useConfig';
 import { ContentView } from './components/ContentView';
-import { DefaultLayout } from '../features/layouts/DefaultLayout';
-import type { NavigationItem } from '../features/config/types';
+import { DefaultLayout } from './features/layouts/DefaultLayout';
+import type { NavigationItem } from './features/config/types';
 import './index.css';
 
 const Home = () => {
