@@ -9,6 +9,7 @@ on:
       - "docs/**"
       - "tools/docusaurus/**"
       - "package.json"
+      - "package-lock.json"
       - ".github/workflows/deploy-docs.yml"
   workflow_dispatch:
 
