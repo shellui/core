@@ -23,9 +23,9 @@ export const DefaultLayout = ({ title, navigation }: DefaultLayoutProps) => {
       <Sidebar>
         {title && (
           <SidebarHeader className="border-b border-sidebar-border pb-4">
-            <h1 className="text-lg font-semibold text-sidebar-foreground">
+            <Link to="/" className="text-lg font-semibold text-sidebar-foreground hover:text-sidebar-foreground/80 transition-colors">
               {title}
-            </h1>
+            </Link>
           </SidebarHeader>
         )}
         
