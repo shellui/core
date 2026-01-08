@@ -5,7 +5,7 @@
     {
       "label": "Docs",
       "path": "docs",
-      "url": "https://docs.shellui.com"
+      "url": "http://localhost:3000/"
     },
     {
       "label": "Playground",
