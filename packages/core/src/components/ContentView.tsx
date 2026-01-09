@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface ContentViewProps {
@@ -20,10 +20,33 @@ export const ContentView = ({ url, pathPrefix }: ContentViewProps) => {
       if (type === 'SHELLUI_URL_CHANGED') {
         const { pathname, search, hash } = payload;
         
-        const cleanPathname = pathname.startsWith('/') ? pathname.slice(1) : pathname;
-        const newShellPath = `/${pathPrefix}/${cleanPathname}${search}${hash}`;
+        // Remove leading slash and trailing slashes from iframe pathname
+        let cleanPathname = pathname.startsWith('/') ? pathname.slice(1) : pathname;
+        cleanPathname = cleanPathname.replace(/\/+$/, ''); // Remove trailing slashes
         
-        if (window.location.pathname + window.location.search + window.location.hash !== newShellPath) {
+        // Construct the new path without trailing slashes
+        let newShellPath = cleanPathname 
+          ? `/${pathPrefix}/${cleanPathname}${search}${hash}`
+          : `/${pathPrefix}${search}${hash}`;
+        
+        // Normalize: remove trailing slashes from pathname part only (preserve query/hash)
+        const urlParts = newShellPath.match(/^([^?#]*)([?#].*)?$/);
+        if (urlParts) {
+          const pathnamePart = urlParts[1].replace(/\/+$/, '') || '/';
+          const queryHashPart = urlParts[2] || '';
+          newShellPath = pathnamePart + queryHashPart;
+        }
+        
+        // Normalize current path for comparison (remove trailing slashes from pathname)
+        const currentPathname = window.location.pathname.replace(/\/+$/, '') || '/';
+        const currentPath = currentPathname + window.location.search + window.location.hash;
+        
+        // Normalize new path for comparison
+        const newPathParts = newShellPath.match(/^([^?#]*)([?#].*)?$/);
+        const normalizedNewPathname = newPathParts?.[1]?.replace(/\/+$/, '') || '/';
+        const normalizedNewPath = normalizedNewPathname + (newPathParts?.[2] || '');
+        
+        if (currentPath !== normalizedNewPath) {
           // Mark this navigation as internal so we don't try to "push" it back to the iframe
           isInternalNavigation.current = true;
           navigate(newShellPath, { replace: true });
