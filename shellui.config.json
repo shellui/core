@@ -5,12 +5,17 @@
     {
       "label": "Docs",
       "path": "docs",
-      "url": "http://localhost:3000/"
+      "url": "https://docs.shellui.com/"
     },
     {
       "label": "Playground",
       "path": "playground",
       "url": "http://localhost:4000/"
+    },
+    {
+      "label": "Sebastienbarbier",
+      "path": "sebastienbarbier",
+      "url": "https://sebastienbarbier.com/"
     }
   ]
 }

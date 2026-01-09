@@ -14,7 +14,7 @@ export async function buildCommand(root = '.') {
   console.log(pc.blue(`Building ShellUI...`));
   
   // Load configuration
-  const config = loadConfig(root);
+  const config = await loadConfig(root);
   
   // Get core package paths
   const corePackagePath = resolvePackagePath('@shellui/core');

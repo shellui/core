@@ -19,7 +19,7 @@ let isFirstStart = true;
  */
 async function startServer(root, cwd, shouldOpen = false) {
   // Load configuration
-  const config = loadConfig(root);
+  const config = await loadConfig(root);
   
   // Get core package paths
   const corePackagePath = resolvePackagePath('@shellui/core');
@@ -83,11 +83,21 @@ async function restartServer(root, cwd) {
  * @param {string} cwd - Current working directory
  */
 function watchConfig(root, cwd) {
-  const configPath = path.resolve(cwd, root, 'shellui.json');
+  const configDir = path.resolve(cwd, root);
+  const tsConfigPath = path.join(configDir, 'shellui.config.ts');
+  const jsonConfigPath = path.join(configDir, 'shellui.config.json');
+  
+  // Determine which config file exists (prefer TypeScript)
+  let configPath = null;
+  if (fs.existsSync(tsConfigPath)) {
+    configPath = tsConfigPath;
+  } else if (fs.existsSync(jsonConfigPath)) {
+    configPath = jsonConfigPath;
+  }
   
   // Only watch if config file exists
-  if (!fs.existsSync(configPath)) {
-    console.log(pc.yellow(`No shellui.json found, config watching disabled.`));
+  if (!configPath) {
+    console.log(pc.yellow(`No shellui.config.ts or shellui.config.json found, config watching disabled.`));
     return;
   }
 

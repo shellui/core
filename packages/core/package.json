@@ -3,7 +3,18 @@
   "version": "0.0.1",
   "description": "ShellUI Core - Core React application runtime",
   "main": "src/app.tsx",
+  "types": "src/index.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/app.tsx"
+    },
+    "./types": {
+      "types": "./src/features/config/types.ts",
+      "default": "./src/features/config/types.ts"
+    }
+  },
   "files": [
     "src",
     "README.md",
