@@ -1,55 +1,82 @@
 # Installation
 
-Install ShellUI packages to get started.
+Install ShellUI to start building your microfrontend application.
 
-## CLI Installation
+## Prerequisites
 
-### Global Installation
+- **Node.js** version 18.0.0 or higher
+- **npm** (comes with Node.js)
 
-Install the CLI globally to use it from anywhere:
+## Install ShellUI CLI
+
+The ShellUI CLI is the main tool you'll use to create, develop, and build ShellUI applications.
+
+### Global Installation (Recommended)
+
+Install the CLI globally to use it from anywhere on your system:
 
 ```bash
 npm install -g @shellui/cli
 ```
 
+After installation, you can use the `shellui` command from any directory:
+
+```bash
+shellui start
+shellui build
+```
+
 ### Local Installation
 
-Install as a dev dependency in your project:
+Alternatively, install the CLI as a dev dependency in your project:
 
 ```bash
 npm install --save-dev @shellui/cli
 ```
 
-## Core Installation
-
-Install the core React application runtime:
+Then use it via `npx`:
 
 ```bash
-npm install @shellui/core
+npx shellui start
+npx shellui build
 ```
 
-## SDK Installation
+Or add scripts to your `package.json`:
 
-Install the JavaScript SDK for ShellUI integration:
+```json
+{
+  "scripts": {
+    "start": "shellui start",
+    "build": "shellui build"
+  }
+}
+```
+
+## Verify Installation
+
+Check that ShellUI CLI is installed correctly:
 
 ```bash
-npm install @shellui/sdk
+shellui --version
 ```
 
-## Monorepo Setup
+You should see the version number printed.
 
-If you're working with the monorepo:
+## Next Steps
 
-```bash
-# Clone the repository
-git clone <repository-url>
-cd shellui/core
+Once installed, you're ready to:
 
-# Install all dependencies
-npm install
+1. **[Configure your ShellUI app](/quickstart#configuration)** - Create a configuration file
+2. **[Start developing](/quickstart#running-the-development-server)** - Run the development server
+3. **[Build for production](/cli#build)** - Build your application
 
-# Build all packages
-npm run build
-```
+## Additional Packages
+
+The CLI automatically handles the core dependencies. If you need to integrate ShellUI programmatically, you can install:
+
+- `@shellui/core` - Core React application runtime
+- `@shellui/sdk` - JavaScript SDK for ShellUI integration
+
+These are typically not needed for basic usage, as the CLI manages them automatically.
 
 
