@@ -1,5 +1,5 @@
 import { Link, useLocation, Outlet } from 'react-router-dom';
-import { useMemo, useEffect, useRef } from 'react';
+import { useMemo } from 'react';
 import { shellui } from '@shellui/sdk';
 import type { NavigationItem } from '../config/types';
 import {
@@ -23,6 +23,7 @@ import {
 import { ModalProvider, useModal } from '../modal/ModalContext';
 import { cn } from '@/lib/utils';
 import { getIconComponent } from '@/components/Icon';
+import { ContentView } from '@/components/ContentView';
 
 interface DefaultLayoutProps {
   title?: string;
@@ -84,46 +85,7 @@ const NavigationContent = ({ navigation }: { navigation: NavigationItem[] }) => 
 };
 
 const DefaultLayoutContent = ({ title, navigation, settingsUrl }: DefaultLayoutProps) => {
-  const { isOpen, modalUrl, openModal, closeModal } = useModal();
-  const modalIframeRef = useRef<HTMLIFrameElement>(null);
-
-  // Listen for messages from the modal's iframe content and propagate to parent
-  useEffect(() => {
-    if (!isOpen || !modalUrl) return;
-
-    const handleMessage = (event: MessageEvent) => {
-      // Only handle SHELLUI_OPEN_MODAL messages
-      if (event.data?.type !== 'SHELLUI_OPEN_MODAL') {
-        return;
-      }
-
-      // When modal is open, accept SHELLUI_OPEN_MODAL messages and propagate to parent
-      // This handles messages from the modal's iframe content
-      // For same-origin iframes, we can verify the source matches our modal iframe
-      // For cross-origin iframes, we accept the message (assuming it's from modal content)
-      const isFromModalIframe = !modalIframeRef.current || 
-        event.source === modalIframeRef.current.contentWindow ||
-        event.source === null; // Cross-origin iframes may have null source
-
-      if (isFromModalIframe) {
-        // Propagate to parent ShellUI instance
-        if (window.parent !== window) {
-          console.log('posting message to parent');
-          window.parent.postMessage({
-            type: 'SHELLUI_OPEN_MODAL',
-            payload: event.data.payload
-          }, '*');
-        } else {
-          // We're at top level, open modal (this shouldn't happen but handle it)
-          const url = event.data.payload?.url || undefined;
-          openModal(url);
-        }
-      }
-    };
-
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [isOpen, modalUrl, openModal]);
+  const { isOpen, modalUrl, closeModal } = useModal();
 
   return (
     <SidebarProvider>
@@ -167,24 +129,20 @@ const DefaultLayoutContent = ({ title, navigation, settingsUrl }: DefaultLayoutP
         <DialogContent className="max-w-4xl w-full h-[80vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Settings</DialogTitle>
-            {!modalUrl && (
-              <DialogDescription>
-                This is a modal.
-              </DialogDescription>
-            )}
           </DialogHeader>
           {modalUrl ? (
-            <iframe
-              ref={modalIframeRef}
-              src={modalUrl}
-              className="flex-1 w-full border-0 rounded-md"
-              style={{ minHeight: 0 }}
-              title="Modal Content"
-              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"
-            />
+            <div className="flex-1" style={{ minHeight: 0 }}>
+              <ContentView url={modalUrl} pathPrefix="settings" ignoreMessages={true} />
+            </div>
           ) : (
             <div className="flex-1 p-4">
-              <p>This is a modal.</p>
+              <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+                <h3 className="font-semibold text-destructive mb-2">Error: Modal URL is undefined</h3>
+                <p className="text-sm text-muted-foreground">
+                  The <code className="text-xs bg-background px-1 py-0.5 rounded">openModal</code> function was called without a valid URL parameter. 
+                  Please ensure you provide a URL when opening the modal.
+                </p>
+              </div>
             </div>
           )}
         </DialogContent>

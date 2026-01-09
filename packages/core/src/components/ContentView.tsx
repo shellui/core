@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 interface ContentViewProps {
   url: string;
   pathPrefix: string;
+  ignoreMessages?: boolean;
 }
 
-export const ContentView = ({ url, pathPrefix }: ContentViewProps) => {
+export const ContentView = ({ url, pathPrefix, ignoreMessages = false }: ContentViewProps) => {
   const navigate = useNavigate();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const isInternalNavigation = useRef(false);
@@ -16,6 +17,17 @@ export const ContentView = ({ url, pathPrefix }: ContentViewProps) => {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const { type, payload } = event.data;
+
+      if (ignoreMessages) {
+        return;
+      }
+
+      // Only handle messages from this component's iframe
+      if (iframeRef.current && 
+          event.source !== iframeRef.current.contentWindow && 
+          event.source !== null) {
+        return;
+      }
 
       if (type === 'SHELLUI_OPEN_MODAL') {
         // ContentView always renders an iframe, so we should always propagate to parent
