@@ -77,7 +77,11 @@ const SidebarTrigger = React.forwardRef<
       }}
       {...props}
     >
-      <Icon path="/icons/panel-left.svg" className="h-5 w-5" size={20} />
+      <Icon 
+        path={isCollapsed ? "/icons/panel-left.svg" : "/icons/panel-left-closed.svg"} 
+        className="h-5 w-5 transition-transform duration-300" 
+        size={20} 
+      />
     </button>
   )
 })
