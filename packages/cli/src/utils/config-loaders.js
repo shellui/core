@@ -17,7 +17,12 @@ export async function loadTypeScriptConfig(configPath, configDir) {
   const configFileUrl = pathToFileURL(configPath).href;
   const loaderScript = `
     import * as configModule from ${JSON.stringify(configFileUrl)};
-    const result = configModule.default || configModule.config || configModule;
+    // Extract the actual config, handling both default export and named exports
+    let result = configModule.default || configModule.config || configModule;
+    // If result itself has a default property, extract it
+    if (result && typeof result === 'object' && result.default && Object.keys(result).length === 1) {
+      result = result.default;
+    }
     console.log(JSON.stringify(result));
   `;
   
@@ -76,7 +81,9 @@ export async function loadTypeScriptConfig(configPath, configDir) {
         } else {
           try {
             const parsed = JSON.parse(stdout.trim());
-            resolve(parsed);
+            // If the parsed result has a 'default' key, extract it
+            const config = parsed.default || parsed.config || parsed;
+            resolve(config);
           } catch (parseError) {
             reject(new Error(`Failed to parse config output: ${parseError.message}\nOutput: ${stdout}\nStderr: ${stderr}`));
           }

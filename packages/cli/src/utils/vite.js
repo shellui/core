@@ -16,8 +16,11 @@ export function getCoreSrcPath() {
  * @returns {Object} Vite define configuration
  */
 export function createViteDefine(config) {
+  // Ensure config is serializable and has proper structure
+  const serializableConfig = JSON.parse(JSON.stringify(config));
+  
   return {
-    '__SHELLUI_CONFIG__': JSON.stringify(config),
+    '__SHELLUI_CONFIG__': JSON.stringify(serializableConfig),
   };
 }
 
