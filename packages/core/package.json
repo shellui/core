@@ -34,15 +34,16 @@
   "license": "MIT",
   "dependencies": {
     "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.4",
+    "@shellui/sdk": "*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
     "react-router-dom": "^6.30.3",
-    "tailwind-merge": "^3.4.0",
-    "@shellui/sdk": "*"
+    "tailwind-merge": "^3.4.0"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",

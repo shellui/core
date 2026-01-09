@@ -22,12 +22,40 @@ class ShellUISDK {
     // Monitor URL changes
     this.setupUrlMonitoring();
     
+    // Listen for messages from nested iframes to propagate modal requests
+    this.setupIframeMessageListener();
+    
     // Initial sync
     this.notifyParent();
 
     this.initialized = true;
     console.log('ShellUI SDK initialized');
     return this;
+  }
+
+  /**
+   * Sets up a listener for messages from nested iframes
+   * This ensures modal requests from iframe content propagate to parent
+   */
+  setupIframeMessageListener() {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const self = this;
+    window.addEventListener('message', function(event) {
+      // Only handle SHELLUI_OPEN_MODAL messages
+      if (event.data?.type === 'SHELLUI_OPEN_MODAL') {
+        // If we're in an iframe, propagate to parent
+        if (window.parent !== window) {
+          window.parent.postMessage({
+            type: 'SHELLUI_OPEN_MODAL',
+            payload: event.data.payload
+          }, '*');
+        }
+        // If we're at top level, the message will be handled by ModalProvider
+      }
+    });
   }
 
   /**
@@ -101,6 +129,37 @@ class ShellUISDK {
     // Send to parent frame
     if (window.parent !== window) {
       window.parent.postMessage(message, '*');
+    }
+  }
+
+  /**
+   * Opens the settings modal with optional URL
+   * @param {string} [url] - Optional URL or path to load in the modal iframe. Must be same domain or relative.
+   * If inside an iframe, sends a message to the parent to open the modal
+   * If not in an iframe, dispatches a custom event that can be handled by the app
+   */
+  openModal(url) {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    // Check if we're inside an iframe
+    if (window.parent !== window) {
+      // Send message to parent frame to open modal
+      const message = {
+        type: 'SHELLUI_OPEN_MODAL',
+        payload: {
+          url: url || null
+        }
+      };
+      window.parent.postMessage(message, '*');
+    } else {
+      // Not in an iframe - dispatch a custom event
+      // This allows the app to listen for it if needed
+      const event = new CustomEvent('shellui:open-modal', {
+        detail: { url }
+      });
+      window.dispatchEvent(event);
     }
   }
 

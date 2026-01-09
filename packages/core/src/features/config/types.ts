@@ -9,4 +9,5 @@ export interface ShellUIConfig {
   port?: number;
   title?: string;
   navigation?: NavigationItem[];
+  settingsUrl?: string; // URL to display in the settings modal iframe (e.g., 'http://localhost:3000/settings')
 }

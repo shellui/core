@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { shellui } from '@shellui/sdk';
 import { useConfig } from './features/config/useConfig';
 import { ContentView } from './components/ContentView';
+import { SettingsView } from './components/SettingsView';
 import { DefaultLayout } from './features/layouts/DefaultLayout';
 import type { NavigationItem } from './features/config/types';
 import './index.css';
@@ -68,6 +69,45 @@ const AppContent = () => {
     shellui.init();
   }, []);
 
+  // Listen for SHELLUI_OPEN_MODAL messages from nested iframes at the app level
+  // This ensures modal requests propagate to the top-level ShellUI instance
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Only handle our own messages
+      if (event.data?.type === 'SHELLUI_OPEN_MODAL') {
+        // If we're in an iframe, propagate to parent
+        if (window.parent !== window) {
+          window.parent.postMessage({
+            type: 'SHELLUI_OPEN_MODAL',
+            payload: event.data.payload
+          }, '*');
+        }
+        // If we're at top level, the ContentView or ModalProvider will handle it
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
+
+  // Extract path from settingsUrl (in case it's a full URL)
+  // Must be before conditional returns to follow Rules of Hooks
+  const settingsPath = useMemo(() => {
+    if (!config.settingsUrl) return null;
+    try {
+      // If it's a full URL, extract the pathname
+      if (config.settingsUrl.startsWith('http://') || config.settingsUrl.startsWith('https://')) {
+        const url = new URL(config.settingsUrl);
+        return url.pathname;
+      }
+      // Otherwise, it's already a path
+      return config.settingsUrl;
+    } catch {
+      // If parsing fails, assume it's a path
+      return config.settingsUrl;
+    }
+  }, [config.settingsUrl]);
+
   // Memoize routes to prevent recreation on every render
   const navigationRoutes = useMemo(
     () =>
@@ -121,11 +161,13 @@ const AppContent = () => {
 
   return (
     <Routes>
+      {settingsPath && <Route path={settingsPath} element={<SettingsView />} />}
       <Route
         element={
           <DefaultLayout 
             title={config.title} 
-            navigation={config.navigation || []} 
+            navigation={config.navigation || []}
+            settingsUrl={config.settingsUrl}
           />
         }
       >

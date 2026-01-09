@@ -3,6 +3,7 @@ import type { ShellUIConfig } from '@shellui/core';
 const config: ShellUIConfig = {
   port: 4000,
   title: 'ShellUI',
+  settingsUrl: '/settings',
   navigation: [
     {
       label: 'Docs',
